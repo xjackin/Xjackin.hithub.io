@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高校学生轻量化生活服务工具</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: #165DFF;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background-color: #165DFF;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0E48D9;
+        }
+
+        /* 布局样式 */
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 16px 24px;
+            margin-bottom: 24px;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .module-section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .module-section h2 {
+            margin-bottom: 16px;
+            color: #165DFF;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 8px;
+        }
+
+        /* 模块样式 */
+        /* 校园通知 */
+        .notice-list {
+            margin-top: 16px;
+        }
+
+        .notice-item {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.3s;
+        }
+
+        .notice-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .notice-title {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .notice-meta {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .notice-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        /* 失物招领 */
+        .lostfound-form {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-item input, .form-item select, .form-item textarea {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .image-preview {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            display: none;
+            margin-top: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* 二手交易 */
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .product-card {
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 16px;
+        }
+
+        .product-title {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .product-price {
+            color: #E64340;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .product-meta {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 16px;
+        }
+
+        .comment-board {
+            padding: 16px;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+        }
+
+        .comment-form {
+            margin-bottom: 16px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .comments-list {
+            margin-top: 16px;
+        }
+
+        .comment-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        /* 课表查询 */
+        .schedule-query {
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .schedule-query input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+
+        .week-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        .schedule-table th, .schedule-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .schedule-table th {
+            background-color: #f5f5f5;
+        }
+
+        .course-cell {
+            background-color: #e8f4ff;
+            padding: 4px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav id="navbar" class="navbar"></nav>
+
+    <!-- 主内容区 -->
+    <main class="main-container">
+        <!-- 校园通知模块 -->
+        <section id="notice-section" class="module-section">
+            <h2>校园通知</h2>
+            <div class="search-container" id="notice-search"></div>
+            <ul id="notice-container" class="notice-list"></ul>
+        </section>
+
+        <!-- 失物招领模块 -->
+        <section id="lostfound-section" class="module-section">
+            <h2>失物招领</h2>
+            <form id="lostfound-form" class="lostfound-form">
+                <div class="form-item">
+                    <label>类型：</label>
+                    <select name="type" required>
+                        <option value="lost">失物</option>
+                        <option value="found">招领</option>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <label>物品名称：</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-item">
+                    <label>物品分类：</label>
+                    <input type="text" name="category" required>
+                </div>
+                <div class="form-item">
+                    <label>描述：</label>
+                    <textarea name="description" required></textarea>
+                </div>
+                <div class="form-item">
+                    <label>联系方式：</label>
+                    <input type="text" name="contact" required>
+                </div>
+                <div class="form-item">
+                    <label>图片：</label>
+                    <input type="file" id="image-upload" accept="image/*">
+                    <img id="image-preview" class="image-preview" src="" alt="预览图">
+                </div>
+                <button type="submit" class="submit-btn">发布</button>
+            </form>
+            <div id="lostfound-list" class="lostfound-list"></div>
+        </section>
+
+        <!-- 二手交易模块 -->
+        <section id="secondhand-section" class="module-section">
+            <h2>二手交易</h2>
+            <div id="product-container" class="product-list"></div>
+            <div id="comment-board" class="comment-board">
+                <h3>商品留言</h3>
+                <form class="comment-form">
+                    <textarea id="comment-content" placeholder="请输入留言内容"></textarea>
+                    <button type="submit">提交留言</button>
+                </form>
+                <ul class="comments-list"></ul>
+            </div>
+        </section>
+
+        <!-- 课表查询模块 -->
+        <section id="schedule-section" class="module-section">
+            <h2>课表查询</h2>
+            <div class="schedule-query">
+                <input type="text" id="student-id" placeholder="请输入学号">
+                <button id="query-schedule">查询</button>
+                <div class="week-control">
+                    <button id="prev-week">上一周</button>
+                    <span id="current-week">第1周</span>
+                    <button id="next-week">下一周</button>
+                </div>
+            </div>
+            <div id="schedule-container" class="schedule-container"></div>
+        </section>
+    </main>
+
+    <script>
+        // ===================== 工具函数 =====================
+        // 日期格式化
+        function formatDate(time, format = 'YYYY-MM-DD') {
+            const date = new Date(time);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hour = String(date.getHours()).padStart(2, '0');
+            const minute = String(date.getMinutes()).padStart(2, '0');
+
+            switch (format) {
+                case 'YYYY-MM-DD':
+                    return `${year}-${month}-${day}`;
+                case 'YYYY-MM-DD HH:mm':
+                    return `${year}-${month}-${day} ${hour}:${minute}`;
+                default:
+                    return date.toLocaleDateString('zh-CN');
+            }
+        }
+
+        // 模拟请求函数
+        const request = (() => {
+            let isLoading = false;
+
+            // 模拟数据
+            const mockNotices = [
+                { id: 1, title: '关于2025年暑假放假安排的通知', department: '教务处', publishTime: Date.now() - 86400000 },
+                { id: 2, title: '校园招聘会报名通知', department: '就业指导中心', publishTime: Date.now() - 172800000 }
+            ];
+
+            const mockSchedule = [
+                { day: 1, period: 2, name: 'JavaScript程序设计', teacher: '王老师', classroom: '303教室' },
+                { day: 3, period: 4, name: '计算机网络', teacher: '李老师', classroom: '501教室' }
+            ];
+
+            const mockComments = [
+                { username: '小明', content: '这本书还在吗？', createTime: Date.now() - 3600000 }
+            ];
+
+            return async (url, params = {}) => {
+                if (isLoading) return Promise.reject("重复请求");
+                isLoading = true;
+
+                try {
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    if (url.includes('/api/notice')) {
+                        return mockNotices.filter(notice => {
+                            if (params.keyword) {
+                                return notice.title.includes(params.keyword);
+                            }
+                            return true;
+                        });
+                    } else if (url.includes('/api/schedule')) {
+                        return mockSchedule;
+                    } else if (url.includes('/api/secondHand')) {
+                        return mockComments;
+                    } else if (url.includes('/api/upload/image')) {
+                        return { imageUrl: 'https://picsum.photos/200/200' };
+                    } else {
+                        return { code: 200, message: '成功' };
+                    }
+                } catch (error) {
+                    console.error("请求失败：", error);
+                    return Promise.reject(error);
+                } finally {
+                    isLoading = false;
+                }
+            };
+        })();
+
+        // ===================== 公共组件 =====================
+        // 导航栏组件
+        class Navbar {
+            constructor(selector) {
+                this.container = document.querySelector(selector);
+            }
+
+            init() {
+                this.render();
+            }
+
+            render() {
+                this.container.innerHTML = `
+                    <div class="navbar-content" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="logo">
+                            <img src="https://picsum.photos/40/40" alt="logo" width="40" height="40">
+                            <span class="logo-text" style="margin-left: 8px; font-weight: bold;">校园生活服务工具</span>
+                        </div>
+                        <ul class="nav-menu" style="display: flex; gap: 24px; list-style: none;">
+                            <li><a href="#notice-section">校园通知</a></li>
+                            <li><a href="#lostfound-section">失物招领</a></li>
+                            <li><a href="#secondhand-section">二手交易</a></li>
+                            <li><a href="#schedule-section">课表查询</a></li>
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+
+        // 搜索组件
+        class Search {
+            constructor(selector) {
+                this.container = document.querySelector(selector);
+            }
+
+            init() {
+                this.render();
+                this.bindEvents();
+            }
+
+            render() {
+                this.container.innerHTML = `
+                    <input type="text" id="search-input" placeholder="请输入关键词搜索通知" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    <button id="search-btn">搜索</button>
+                `;
+                this.container.style.display = 'flex';
+                this.container.style.gap = '8px';
+            }
+
+            bindEvents() {
+                this.container.querySelector('#search-btn').addEventListener('click', () => {
+                    const keyword = this.container.querySelector('#search-input').value.trim();
+                    const event = new CustomEvent('noticeSearch', { detail: { keyword } });
+                    document.dispatchEvent(event);
+                });
+            }
+        }
+
+        // ===================== 核心模块 =====================
+        // 校园通知模块
+        class NoticeList {
+            constructor(selector) {
+                this.container = document.querySelector(selector);
+            }
+
+            init() {
+                this.loadNotices();
+                this.bindEvents();
+            }
+
+            async loadNotices(params = {}) {
+                const data = await request('/api/notice', params);
+                this.renderList(data);
+            }
+
+            renderList(data) {
+                this.container.innerHTML = '';
+                const fragment = document.createDocumentFragment();
+
+                data.forEach(notice => {
+                    const li = document.createElement('li');
+                    li.className = 'notice-item';
+                    li.innerHTML = `
+                        <h3 class="notice-title">${notice.title}</h3>
+                        <div class="notice-meta">
+                            <span>${notice.department}</span>
+                            <span>${formatDate(notice.publishTime)}</span>
+                        </div>
+                        <button class="view-detail" data-id="${notice.id}">查看详情</button>
+                    `;
+                    fragment.appendChild(li);
+                });
+
+                this.container.appendChild(fragment);
+            }
+
+            bindEvents() {
+                document.addEventListener('noticeSearch', (e) => {
+                    this.loadNotices({ keyword: e.detail.keyword });
+                });
+
+                this.container.addEventListener('click', async (e) => {
+                    if (e.target.classList.contains('view-detail')) {
+                        const id = e.target.dataset.id;
+                        const detail = await request(`/api/notice/${id}`);
+                        this.showDetail(detail[0]);
+                    }
+                });
+            }
+
+            showDetail(notice) {
+                const modal = document.createElement('div');
+                modal.className = 'notice-modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h2>${notice.title}</h2>
+                        <div class="modal-meta">
+                            <span>发布单位：${notice.department}</span>
+                            <span>发布时间：${formatDate(notice.publishTime, 'YYYY-MM-DD HH:mm')}</span>
+                        </div>
+                        <div class="modal-body" style="margin-top: 16px;">
+                            <p>为保障全校师生的暑期生活和学习安排，现将2025年暑假放假安排通知如下：</p>
+                            <p>1. 放假时间：2025年7月10日至8月31日。</p>
+                            <p>2. 开学时间：2025年9月1日正式上课。</p>
+                            <p>请各位师生合理安排假期时间，注意出行安全。</p>
+                        </div>
+                        <button class="close-modal" style="margin-top: 16px;">关闭</button>
+                    </div>
+                `;
+
+                document.body.appendChild(modal);
+                modal.querySelector('.close-modal').addEventListener('click', () => {
+                    document.body.removeChild(modal);
+                });
+            }
+        }
+
+        // 失物招领模型
+        class LostFoundInfo {
+            constructor(data) {
+                this.id = data.id || Date.now();
+                this.type = data.type;
+                this.name = data.name;
+                this.description = data.description;
+                this.contact = data.contact;
+                this.image = data.image || '';
+                this.category = data.category;
+                this.publishTime = data.publishTime || Date.now();
+            }
+
+            formatPublishTime() {
+                return formatDate(this.publishTime, 'YYYY-MM-DD HH:mm');
+            }
+
+            toJSON() {
+                return {
+                    id: this.id,
+                    type: this.type,
+                    name: this.name,
+                    description: this.description,
+                    contact: this.contact,
+                    image: this.image,
+                    category: this.category,
+                    publishTime: this.publishTime
+                };
+            }
+        }
+
+        // 失物招领表单
+        class LostFoundForm {
+            constructor(selector) {
+                this.form = document.querySelector(selector);
+                this.imageInput = this.form.querySelector('#image-upload');
+                this.imagePreview = this.form.querySelector('#image-preview');
+            }
+
+            init() {
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                this.imageInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.imagePreview.src = e.target.result;
+                            this.imagePreview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+
+                this.form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(this.form);
+                    const data = {
+                        type: formData.get('type'),
+                        name: formData.get('name'),
+                        category: formData.get('category'),
+                        description: formData.get('description'),
+                        contact: formData.get('contact')
+                    };
+
+                    if (this.imageInput.files[0]) {
+                        const imageRes = await request('/api/upload/image');
+                        data.image = imageRes.imageUrl;
+                    }
+
+                    const lostFoundInfo = new LostFoundInfo(data);
+                    await request('/api/lostFound', {
+                        method: 'POST',
+                        body: JSON.stringify(lostFoundInfo.toJSON())
+                    });
+
+                    alert('发布成功！');
+                    this.form.reset();
+                    this.imagePreview.style.display = 'none';
+                });
+            }
+        }
+
+        // 商品卡片组件
+        class ProductCard {
+            constructor(data) {
+                this.data = data;
+                this.element = this.createCard();
+            }
+
+            createCard() {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="product-image">
+                        <img src="${this.data.image || 'https://picsum.photos/200/200'}" alt="${this.data.title}">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${this.data.title}</h3>
+                        <div class="product-price">¥${this.data.price.toFixed(2)}</div>
+                        <div class="product-meta">发布时间：${formatDate(this.data.publishTime)}</div>
+                        <button class="view-product" data-id="${this.data.id}">查看详情</button>
+                    </div>
+                `;
+                return card;
+            }
+
+            getElement() {
+                return this.element;
+            }
+        }
+
+        // 留言板组件
+        class CommentBoard {
+            constructor(productId, selector) {
+                this.productId = productId;
+                this.container = document.querySelector(selector);
+                this.commentsList = this.container.querySelector('.comments-list');
+            }
+
+            init() {
+                this.loadComments();
+                this.bindEvents();
+            }
+
+            async loadComments() {
+                const comments = await request(`/api/secondHand/${this.productId}/comments`);
+                this.renderComments(comments);
+            }
+
+            renderComments(comments) {
+                this.commentsList.innerHTML = '';
+                comments.forEach(comment => {
+                    const li = document.createElement('li');
+                    li.className = 'comment-item';
+                    li.innerHTML = `
+                        <div class="comment-username">${comment.username}</div>
+                        <div class="comment-content">${comment.content}</div>
+                        <div class="comment-time">${formatDate(comment.createTime)}</div>
+                    `;
+                    this.commentsList.appendChild(li);
+                });
+            }
+
+            bindEvents() {
+                const commentForm = this.container.querySelector('.comment-form');
+                commentForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const content = this.container.querySelector('#comment-content').value.trim();
+                    if (!content) return alert('留言内容不能为空！');
+
+                    const newComment = {
+                        productId: this.productId,
+                        username: '当前用户',
+                        content,
+                        createTime: Date.now()
+                    };
+
+                    await request(`/api/secondHand/${this.productId}/comments`, {
+                        method: 'POST',
+                        body: JSON.stringify(newComment)
+                    });
+
+                    this.loadComments();
+                    commentForm.reset();
+                });
+            }
+        }
+
+        // 周次状态管理
+        const weekState = (() => {
+            let currentWeek = 1;
+            const maxWeek = 18;
+
+            return {
+                getCurrentWeek: () => currentWeek,
+                prevWeek: () => {
+                    if (currentWeek > 1) currentWeek--;
+                    return currentWeek;
+                },
+                nextWeek: () => {
+                    if (currentWeek < maxWeek) currentWeek++;
+                    return currentWeek;
+                },
+                setWeek: (week) => {
+                    if (week >= 1 && week <= maxWeek) currentWeek = week;
+                    return currentWeek;
+                }
+            };
+        })();
+
+        // 课表查询模块
+        class Schedule {
+            constructor(selector) {
+                this.container = document.querySelector(selector);
+                this.studentId = '';
+            }
+
+            init() {
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                document.querySelector('#query-schedule').addEventListener('click', () => {
+                    this.studentId = document.querySelector('#student-id').value.trim();
+                    if (!this.studentId) return alert('请输入学号！');
+                    this.renderSchedule(weekState.getCurrentWeek());
+                });
+
+                document.querySelector('#prev-week').addEventListener('click', () => {
+                    if (!this.studentId) return alert('请先查询课表！');
+                    const week = weekState.prevWeek();
+                    this.renderSchedule(week);
+                });
+
+                document.querySelector('#next-week').addEventListener('click', () => {
+                    if (!this.studentId) return alert('请先查询课表！');
+                    const week = weekState.nextWeek();
+                    this.renderSchedule(week);
+                });
+            }
+
+            async renderSchedule(week) {
+                document.querySelector('#current-week').textContent = `第${week}周`;
+                const scheduleData = await request('/api/schedule', {
+                    studentId: this.studentId,
+                    week
+                });
+
+                const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+                const periods = Array.from({ length: 12 }, (_, i) => `第${i + 1}节`);
+
+                const table = document.createElement('table');
+                table.className = 'schedule-table';
+                const thead = document.createElement('thead');
+                thead.innerHTML = `<tr><th>节次</th>${days.map(day => `<th>${day}</th>`).join('')}</tr>`;
+                table.appendChild(thead);
+
+                const tbody = document.createElement('tbody');
+                periods.forEach((period, periodIndex) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${period}</td>`;
+
+                    days.forEach((_, dayIndex) => {
+                        const course = scheduleData.find(c => c.day === dayIndex + 1 && c.period === periodIndex + 1);
+                        const td = document.createElement('td');
+
+                        if (course) {
+                            td.className = 'course-cell';
+                            td.innerHTML = `
+                                <div class="course-name">${course.name}</div>
+                                <div class="course-teacher">${course.teacher}</div>
+                                <div class="course-classroom">${course.classroom}</div>
+                            `;
+                        }
+
+                        tr.appendChild(td);
+                    });
+
+                    tbody.appendChild(tr);
+                });
+
+                table.appendChild(tbody);
+                this.container.innerHTML = '';
+                this.container.appendChild(table);
+            }
+        }
+
+        // ===================== 初始化项目 =====================
+        window.onload = () => {
+            // 初始化导航栏
+            const navbar = new Navbar('#navbar');
+            navbar.init();
+
+            // 初始化搜索组件
+            const noticeSearch = new Search('#notice-search');
+            noticeSearch.init();
+
+            // 初始化通知列表
+            const noticeList = new NoticeList('#notice-container');
+            noticeList.init();
+
+            // 初始化失物招领表单
+            const lostFoundForm = new LostFoundForm('#lostfound-form');
+            lostFoundForm.init();
+
+            // 模拟二手商品数据
+            const mockProducts = [
+                { id: 1, title: '全新Python编程书籍', price: 35.9, publishTime: Date.now() - 86400000, image: 'https://picsum.photos/200/200' },
+                { id: 2, title: '闲置电竞鼠标', price: 49.9, publishTime: Date.now() - 172800000, image: 'https://picsum.photos/200/200' }
+            ];
+
+            // 渲染二手商品列表
+            const productContainer = document.querySelector('#product-container');
+            mockProducts.forEach(product => {
+                const card = new ProductCard(product);
+                productContainer.appendChild(card.getElement());
+            });
+
+            // 初始化留言板
+            const commentBoard = new CommentBoard(1, '#comment-board');
+            commentBoard.init();
+
+            // 初始化课表查询
+            const schedule = new Schedule('#schedule-container');
+            schedule.init();
+        };
+    </script>
+</body>
+</html>
